@@ -1,7 +1,23 @@
-.venv/
-venv/
+
+# Python cache
 __pycache__/
-saved_model/
-*.pt
-*.safetensors
-*.bin
+*.py[cod]
+
+# Virtual environment
+venv/
+.venv/
+
+# IDE
+.vscode/
+
+# Environment variables and secrets
+.env
+.env.*
+
+# Operating system
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.log
+.streamlit/secrets.toml
