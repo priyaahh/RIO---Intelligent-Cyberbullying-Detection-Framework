@@ -94,6 +94,31 @@ RIO uses SQLite to store:
 - Confidence scores
 - Analysis timestamps
 
+## 🤖 Multi-Agent Governance & Detection Layer
+
+RIO includes a modular multi-agent system coordinating end-to-end detection, ensembling, and API serving:
+
+- **IngestionAgent** (`agents/ingestion.py`): Validates single comments, batches, and CSV datasets.
+- **PreprocessingAgent** (`agents/preprocessing.py`): Normalizes text matching model training tokenization.
+- **ClassificationAgent** (`agents/classification.py`): Hosts the fine-tuned BERT and DeBERTa-v3 models, provides an explicit mapping layer between DeBERTa's 6 multi-label categories and the 5 canonical classes, and computes ensemble decisions. Includes graceful fallback mock mode if weights are missing.
+- **ReportingAgent** (`agents/reporting.py`): Assigns severity ratings (`LOW`, `MEDIUM`, `HIGH`) and persists records into SQLite.
+- **OrchestratorAgent** (`agents/orchestrator.py`): Coordinates the pipeline execution, error handling, and latency tracking.
+
+### 🌐 FastAPI Service
+Run the multi-agent API service:
+```bash
+uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
+```
+Interactive API docs available at `http://localhost:8000/docs`.
+- `POST /analyze` — Submits text through the full agent pipeline.
+- `GET /health` — Returns system health and model availability flags.
+
+### 📊 Model Evaluation
+Run the pipeline evaluation on `processed/test.csv`:
+```bash
+python scripts/evaluate_agent_pipeline.py --max-samples 200
+```
+
 ## ⚠️ Disclaimer
 
 RIO is an academic prototype. Its predictions may be inaccurate and should not be treated as definitive judgments. Human review is recommended.

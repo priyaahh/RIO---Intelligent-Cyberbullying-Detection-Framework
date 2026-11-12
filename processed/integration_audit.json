@@ -1,0 +1,63 @@
+{
+  "timestamp": "2026-11-01 21:37:00",
+  "raw_contributions": {
+    "davidson_hate_speech": 24783,
+    "cyberbullying_tweets_kaggle": 47692,
+    "jigsaw_toxic_comments": 25960,
+    "trac1_aggression": 12000
+  },
+  "total_raw_records": 110435,
+  "audit_statistics": {
+    "initial_records": 110435,
+    "null_dropped": 0,
+    "invalid_dropped": 29,
+    "duplicates_dropped": 2793,
+    "final_clean_records": 107613
+  },
+  "final_records": 107613,
+  "class_distribution": {
+    "Not Cyberbullying": 29744,
+    "Insult": 26906,
+    "Hate Speech": 26105,
+    "Harassment": 24487,
+    "Threat": 371
+  },
+  "dataset_distribution": {
+    "cyberbullying_tweets_kaggle": 45484,
+    "jigsaw_toxic_comments": 25943,
+    "davidson_hate_speech": 24571,
+    "trac1_aggression": 11615
+  },
+  "cross_tabulation": {
+    "Harassment": {
+      "cyberbullying_tweets_kaggle": 14016,
+      "davidson_hate_speech": 0,
+      "jigsaw_toxic_comments": 6320,
+      "trac1_aggression": 4151
+    },
+    "Hate Speech": {
+      "cyberbullying_tweets_kaggle": 23649,
+      "davidson_hate_speech": 1413,
+      "jigsaw_toxic_comments": 1043,
+      "trac1_aggression": 0
+    },
+    "Insult": {
+      "cyberbullying_tweets_kaggle": 0,
+      "davidson_hate_speech": 19044,
+      "jigsaw_toxic_comments": 5238,
+      "trac1_aggression": 2624
+    },
+    "Not Cyberbullying": {
+      "cyberbullying_tweets_kaggle": 7819,
+      "davidson_hate_speech": 4114,
+      "jigsaw_toxic_comments": 12971,
+      "trac1_aggression": 4840
+    },
+    "Threat": {
+      "cyberbullying_tweets_kaggle": 0,
+      "davidson_hate_speech": 0,
+      "jigsaw_toxic_comments": 371,
+      "trac1_aggression": 0
+    }
+  }
+}

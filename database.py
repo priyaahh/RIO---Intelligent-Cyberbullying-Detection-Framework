@@ -3,7 +3,13 @@ import sqlite3
 from pathlib import Path
 from datetime import datetime
 
-DB_PATH = Path(__file__).resolve().parent / "rio_database.db"
+# --- [AGENT LAYER EDIT] Use centralized DATABASE_PATH from shared config ---
+try:
+    from agents.config import DATABASE_PATH
+    DB_PATH = DATABASE_PATH
+except ImportError:
+    DB_PATH = Path(__file__).resolve().parent / "rio_database.db"
+# ---------------------------------------------------------------------------
 
 
 def create_database():
@@ -25,6 +31,7 @@ def create_database():
 
 
 def save_analysis(comment, prediction, confidence):
+    create_database()
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
 
