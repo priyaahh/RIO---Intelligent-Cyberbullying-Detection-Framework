@@ -251,55 +251,194 @@ class ClassificationAgent:
 
     def _mock_predict(self, text: str, bias: str = "bert") -> Dict[str, float]:
         """
-        Deterministic mock predictor for testing pipeline wiring when model
-        weights are stored externally in Google Drive.
-        Uses keyword signals to produce realistic probability distributions.
+        Deterministic mock predictor for pipeline testing when model weights are
+        stored externally (Google Drive). Vocabulary derived from real dataset patterns
+        in processed/train.csv across all 5 label classes.
         """
         t = text.lower()
-        threat_kw = ["kill", "shoot", "murder", "hurt", "destroy", "die", "punch"]
-        hate_kw = ["nigger", "faggot", "jew", "muslim", "terrorist", "bitch", "slut", "gay", "immigrant"]
-        insult_kw = ["stupid", "idiot", "loser", "dumb", "ugly", "moron", "trash", "pathetic"]
-        harass_kw = ["harass", "annoying", "stalk", "shut up", "leave", "hate you"]
 
+        # ── Threat keywords (derived from train.csv Threat class) ─────────────
+        threat_kw = [
+            "kill", "murder", "shoot", "hang", "stab", "bomb", "attack",
+            "die", "death", "dead", "gonna get you", "hunt you down",
+            "hunt you", "destroy you", "make you pay", "you will pay",
+            "watch your back", "i will find you", "cut off", "slice you",
+            "blow up", "strangle", "poison", "slit", "corpse", "i will kill",
+            "going to kill", "gonna kill", "i hope you die", "hope you die",
+            "burn in hell", "burn alive", "get you", "hurt you", "i will hurt",
+            "you must die", "you should die", "i shall", "i will make",
+            "regret this", "you will regret", "kick your ass", "beat you",
+            "bash you", "smash you", "slap you",
+        ]
+
+        # ── Hate Speech keywords (derived from Hate Speech class) ──────────────
+        hate_kw = [
+            "nigger", "niggers", "faggot", "faggots", "cunt",
+            "slut", "whore", "terrorist", "beaner", "beaners",
+            "feminazi", "subhuman", "inferior race", "white power",
+            "go back to your country", "deport", "barbaric",
+            "rape", "rapey", "statutory rape", "sexist", "sexism",
+            "homophobe", "homophobic", "racist", "racism", "bigot",
+            "nazi", "heil", "jihad", "islamophobe",
+            "black people are", "white people are",
+            "identity hate", "hate crime",
+        ]
+
+        # ── Insult keywords (derived from Insult class) ───────────────────────
+        insult_kw = [
+            "stupid", "idiot", "loser", "dumb", "dumbass", "ugly", "moron",
+            "bitch", "bitches", "hoe", "hoes", "pussy", "dickhead", "asshole",
+            "ass", "jerk", "clown", "freak", "weirdo", "creep", "retard",
+            "retarded", "trash", "garbage", "pathetic", "worthless", "useless",
+            "disgrace", "fool", "failure", "suck", "you suck", "piece of shit",
+            "shut up", "shut your mouth", "you're so dumb", "you are dumb",
+            "so stupid", "brain dead", "brainless", "dim wit", "dimwit",
+            "inbred", "degenerate", "scum", "lowlife", "low life",
+            "dirtbag", "dirt bag", "rat", "pig", "swine",
+            "fat", "fat ass", "lard", "obese", "ugly face",
+            "you're ugly", "you are ugly", "fugly",
+            "fucking idiot", "fucking stupid", "fucking moron",
+            "fuck you", "fuck off", "go fuck", "get lost",
+        ]
+
+        # ── Harassment keywords (derived from Harassment class) ───────────────
+        harass_kw = [
+            "bully", "bullied", "bullying", "bullies",
+            "harass", "harassment", "stalking", "stalk",
+            "nobody likes you", "no one likes you", "everyone hates you",
+            "you have no friends", "go away", "get out", "leave me alone",
+            "stop following", "won't leave you alone", "won't stop",
+            "spreading rumors", "spread rumors", "rumors about you",
+            "school bully", "high school", "middle school",
+            "vandalize", "vandalism", "vandal",
+            "reported you", "block you", "banned",
+            "i hate you", "hate everything about you",
+            "annoying", "pest", "pest you",
+        ]
+
+        # ── Scoring: check each category ─────────────────────────────────────
         scores = {label: 0.05 for label in SHARED_LABELS}
 
-        if any(w in t for w in threat_kw):
+        # Multi-word phrase check (highest priority: check phrases first)
+        threat_phrases = [p for p in threat_kw if " " in p]
+        insult_phrases = [p for p in insult_kw if " " in p]
+        harass_phrases = [p for p in harass_kw if " " in p]
+        hate_phrases   = [p for p in hate_kw if " " in p]
+
+        # Single-word signals (token boundary check to avoid partial matches)
+        import re as _re
+        def _has_word(word_list, text_lower):
+            for item in word_list:
+                if " " in item:
+                    if item in text_lower:
+                        return True
+                else:
+                    if _re.search(r'\b' + _re.escape(item) + r'\b', text_lower):
+                        return True
+            return False
+
+        threat_hit   = _has_word(threat_kw, t)
+        hate_hit     = _has_word(hate_kw, t)
+        insult_hit   = _has_word(insult_kw, t)
+        harass_hit   = _has_word(harass_kw, t)
+
+        # Assign scores (allow multiple signals — pick the highest boost)
+        if threat_hit:
             scores["Threat"] += 0.75
-        elif any(w in t for w in hate_kw):
-            scores["Hate Speech"] += 0.80
-        elif any(w in t for w in insult_kw):
-            scores["Insult"] += 0.70
-        elif any(w in t for w in harass_kw):
-            scores["Harassment"] += 0.65
-        else:
+        if hate_hit:
+            scores["Hate Speech"] += 0.70
+        if insult_hit:
+            scores["Insult"] += 0.60
+        if harass_hit:
+            scores["Harassment"] += 0.55
+
+        # If nothing matched → lean toward Not Cyberbullying
+        if not any([threat_hit, hate_hit, insult_hit, harass_hit]):
             scores["Not Cyberbullying"] += 0.80
 
-        # Add slight variation based on bias
+        # Slight model-specific bias for diversity
         if bias == "bert":
             scores["Insult"] += 0.02
-        else:
-            scores["Harassment"] += 0.02
+        elif bias == "roberta":
+            scores["Threat"] += 0.01
 
         total = sum(scores.values())
         return {k: round(v / total, 4) for k, v in scores.items()}
 
     def _mock_raw_deberta(self, text: str) -> Dict[str, float]:
-        """Generates realistic 6-class raw sigmoids for mock DeBERTa."""
+        """
+        Generates realistic 6-class raw sigmoids for mock DeBERTa fallback.
+        Vocabulary mirrors the same dataset-derived keywords as _mock_predict.
+        """
+        import re as _re
         t = text.lower()
+
+        def _has_word(word_list, text_lower):
+            for item in word_list:
+                if " " in item:
+                    if item in text_lower:
+                        return True
+                else:
+                    if _re.search(r'\b' + _re.escape(item) + r'\b', text_lower):
+                        return True
+            return False
+
         raw = {label: 0.05 for label in DEBERTA_RAW_LABELS}
 
-        if any(w in t for w in ["kill", "hurt", "die"]):
-            raw["threat"] = 0.85
+        # Threat signals
+        threat_kw = [
+            "kill", "murder", "shoot", "hang", "stab", "attack", "die", "death",
+            "dead", "hunt you", "destroy you", "cut off", "strangle", "corpse",
+            "i will kill", "going to kill", "gonna kill", "hope you die",
+            "burn in hell", "hurt you", "i will hurt", "you must die",
+            "you should die", "i shall", "regret this", "kick your ass",
+            "beat you", "bash you", "smash you",
+        ]
+        # Hate speech signals
+        hate_kw = [
+            "nigger", "niggers", "faggot", "faggots", "slut", "whore",
+            "terrorist", "beaner", "beaners", "feminazi", "subhuman",
+            "white power", "deport", "barbaric", "rape", "rapey", "sexist",
+            "homophobe", "homophobic", "racist", "racism", "bigot",
+            "nazi", "heil", "jihad", "identity hate", "hate crime",
+        ]
+        # Insult signals
+        insult_kw = [
+            "stupid", "idiot", "loser", "dumb", "dumbass", "ugly", "moron",
+            "bitch", "bitches", "hoe", "hoes", "pussy", "dickhead", "asshole",
+            "ass", "jerk", "clown", "freak", "retard", "retarded", "trash",
+            "pathetic", "worthless", "useless", "disgrace", "fool", "failure",
+            "suck", "you suck", "piece of shit", "brain dead", "scum", "lowlife",
+            "dirtbag", "fat ass", "fugly", "fucking idiot", "fuck you", "fuck off",
+        ]
+        # Harassment signals
+        harass_kw = [
+            "bully", "bullied", "bullying", "harass", "harassment", "stalking",
+            "nobody likes you", "no one likes you", "everyone hates you",
+            "go away", "get out", "leave me alone", "stop following",
+            "spreading rumors", "spread rumors", "school bully",
+            "i hate you", "hate everything about you", "annoying",
+        ]
+
+        threat_hit  = _has_word(threat_kw, t)
+        hate_hit    = _has_word(hate_kw, t)
+        insult_hit  = _has_word(insult_kw, t)
+        harass_hit  = _has_word(harass_kw, t)
+
+        if threat_hit:
+            raw["threat"] = 0.88
             raw["toxic"] = 0.90
-        elif any(w in t for w in ["bitch", "gay", "jew"]):
-            raw["identity_hate"] = 0.88
-            raw["toxic"] = 0.92
-        elif any(w in t for w in ["stupid", "idiot", "loser"]):
+            raw["severe_toxic"] = 0.60
+        if hate_hit:
+            raw["identity_hate"] = 0.85
+            raw["toxic"] = max(raw["toxic"], 0.88)
+        if insult_hit:
             raw["insult"] = 0.82
-            raw["toxic"] = 0.75
-        elif any(w in t for w in ["hate", "shut up"]):
-            raw["toxic"] = 0.60
-            raw["obscene"] = 0.40
+            raw["obscene"] = 0.70
+            raw["toxic"] = max(raw["toxic"], 0.75)
+        if harass_hit:
+            raw["toxic"] = max(raw["toxic"], 0.65)
+            raw["obscene"] = max(raw["obscene"], 0.45)
 
         return raw
 
