@@ -34,3 +34,4 @@ for text, expected in tests:
     print(f"{r.primary_label:<22} {r.confidence:>5.2f}  {expected:<22} {ok}  {text[:40]}")
 
 print(f"\nScore: {correct}/{len(tests)} ({correct/len(tests)*100:.0f}%)")
+
