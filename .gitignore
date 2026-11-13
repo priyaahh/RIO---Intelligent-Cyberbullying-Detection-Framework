@@ -21,3 +21,10 @@ Thumbs.db
 # Temporary files
 *.log
 .streamlit/secrets.toml
+# Model weights and local data (too big for GitHub)
+saved_model/
+*.safetensors
+*.bin
+*.pt
+data_5class/
+results/*.npy

@@ -1,0 +1,8 @@
+{
+  "threat_threshold": 0.75,
+  "threat_class_idx": 2,
+  "metric_optimized": "macro_f1",
+  "validation_macro_f1_argmax": 0.7673,
+  "validation_macro_f1_tuned": 0.779
+}
+

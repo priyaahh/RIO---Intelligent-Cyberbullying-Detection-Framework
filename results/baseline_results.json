@@ -1,0 +1,76 @@
+{
+  "val": {
+    "accuracy": 0.767,
+    "macro_f1": 0.7105,
+    "threat_f1": 0.4841,
+    "per_class": {
+      "Not Cyberbullying": {
+        "precision": 0.7251,
+        "recall": 0.7953,
+        "f1": 0.7586,
+        "support": 4461
+      },
+      "Insult": {
+        "precision": 0.8393,
+        "recall": 0.7634,
+        "f1": 0.7995,
+        "support": 4036
+      },
+      "Threat": {
+        "precision": 0.3762,
+        "recall": 0.6786,
+        "f1": 0.4841,
+        "support": 56
+      },
+      "Hate Speech": {
+        "precision": 0.8667,
+        "recall": 0.8552,
+        "f1": 0.8609,
+        "support": 3916
+      },
+      "Harassment": {
+        "precision": 0.6546,
+        "recall": 0.6439,
+        "f1": 0.6492,
+        "support": 3673
+      }
+    }
+  },
+  "test": {
+    "accuracy": 0.7713,
+    "macro_f1": 0.7173,
+    "threat_f1": 0.5,
+    "per_class": {
+      "Not Cyberbullying": {
+        "precision": 0.7291,
+        "recall": 0.8057,
+        "f1": 0.7655,
+        "support": 4462
+      },
+      "Insult": {
+        "precision": 0.8367,
+        "recall": 0.7589,
+        "f1": 0.7959,
+        "support": 4036
+      },
+      "Threat": {
+        "precision": 0.3978,
+        "recall": 0.6727,
+        "f1": 0.5,
+        "support": 55
+      },
+      "Hate Speech": {
+        "precision": 0.8768,
+        "recall": 0.8509,
+        "f1": 0.8637,
+        "support": 3916
+      },
+      "Harassment": {
+        "precision": 0.6628,
+        "recall": 0.66,
+        "f1": 0.6614,
+        "support": 3673
+      }
+    }
+  }
+}
