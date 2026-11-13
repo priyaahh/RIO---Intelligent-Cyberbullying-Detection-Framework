@@ -1,0 +1,247 @@
+{
+  "chosen_threat_threshold": 0.75,
+  "val": {
+    "argmax": {
+      "accuracy": 0.8202,
+      "macro_f1": 0.7673,
+      "threat_f1": 0.5548,
+      "per_class": {
+        "Not Cyberbullying": {
+          "precision": 0.8328,
+          "recall": 0.7837,
+          "f1": 0.8075,
+          "support": 4461
+        },
+        "Insult": {
+          "precision": 0.8286,
+          "recall": 0.8697,
+          "f1": 0.8486,
+          "support": 4036
+        },
+        "Threat": {
+          "precision": 0.4343,
+          "recall": 0.7679,
+          "f1": 0.5548,
+          "support": 56
+        },
+        "Hate Speech": {
+          "precision": 0.9107,
+          "recall": 0.8961,
+          "f1": 0.9033,
+          "support": 3916
+        },
+        "Harassment": {
+          "precision": 0.7141,
+          "recall": 0.7302,
+          "f1": 0.722,
+          "support": 3673
+        }
+      }
+    },
+    "tuned_threshold": {
+      "accuracy": 0.8207,
+      "macro_f1": 0.779,
+      "threat_f1": 0.6131,
+      "per_class": {
+        "Not Cyberbullying": {
+          "precision": 0.8328,
+          "recall": 0.7837,
+          "f1": 0.8075,
+          "support": 4461
+        },
+        "Insult": {
+          "precision": 0.8281,
+          "recall": 0.8704,
+          "f1": 0.8488,
+          "support": 4036
+        },
+        "Threat": {
+          "precision": 0.5185,
+          "recall": 0.75,
+          "f1": 0.6131,
+          "support": 56
+        },
+        "Hate Speech": {
+          "precision": 0.9105,
+          "recall": 0.8963,
+          "f1": 0.9034,
+          "support": 3916
+        },
+        "Harassment": {
+          "precision": 0.7135,
+          "recall": 0.7316,
+          "f1": 0.7224,
+          "support": 3673
+        }
+      }
+    },
+    "threshold_search": [
+      {
+        "threshold": 0.1,
+        "macro_f1": 0.7544,
+        "threat_f1": 0.492
+      },
+      {
+        "threshold": 0.15,
+        "macro_f1": 0.759,
+        "threat_f1": 0.514
+      },
+      {
+        "threshold": 0.2,
+        "macro_f1": 0.761,
+        "threat_f1": 0.5233
+      },
+      {
+        "threshold": 0.25,
+        "macro_f1": 0.7622,
+        "threat_f1": 0.5294
+      },
+      {
+        "threshold": 0.3,
+        "macro_f1": 0.7654,
+        "threat_f1": 0.5455
+      },
+      {
+        "threshold": 0.35,
+        "macro_f1": 0.7624,
+        "threat_f1": 0.5309
+      },
+      {
+        "threshold": 0.4,
+        "macro_f1": 0.7658,
+        "threat_f1": 0.5478
+      },
+      {
+        "threshold": 0.45,
+        "macro_f1": 0.7687,
+        "threat_f1": 0.5621
+      },
+      {
+        "threshold": 0.5,
+        "macro_f1": 0.7718,
+        "threat_f1": 0.5772
+      },
+      {
+        "threshold": 0.55,
+        "macro_f1": 0.7698,
+        "threat_f1": 0.5676
+      },
+      {
+        "threshold": 0.6,
+        "macro_f1": 0.773,
+        "threat_f1": 0.5833
+      },
+      {
+        "threshold": 0.65,
+        "macro_f1": 0.7773,
+        "threat_f1": 0.6043
+      },
+      {
+        "threshold": 0.7,
+        "macro_f1": 0.7773,
+        "threat_f1": 0.6043
+      },
+      {
+        "threshold": 0.75,
+        "macro_f1": 0.779,
+        "threat_f1": 0.6131
+      },
+      {
+        "threshold": 0.8,
+        "macro_f1": 0.7776,
+        "threat_f1": 0.6061
+      },
+      {
+        "threshold": 0.85,
+        "macro_f1": 0.7702,
+        "threat_f1": 0.5691
+      },
+      {
+        "threshold": 0.9,
+        "macro_f1": 0.7706,
+        "threat_f1": 0.5714
+      },
+      {
+        "threshold": 0.95,
+        "macro_f1": 0.7631,
+        "threat_f1": 0.5333
+      }
+    ]
+  },
+  "test": {
+    "argmax": {
+      "accuracy": 0.8232,
+      "macro_f1": 0.7668,
+      "threat_f1": 0.539,
+      "per_class": {
+        "Not Cyberbullying": {
+          "precision": 0.8293,
+          "recall": 0.7905,
+          "f1": 0.8094,
+          "support": 4462
+        },
+        "Insult": {
+          "precision": 0.8328,
+          "recall": 0.8674,
+          "f1": 0.8498,
+          "support": 4036
+        },
+        "Threat": {
+          "precision": 0.4419,
+          "recall": 0.6909,
+          "f1": 0.539,
+          "support": 55
+        },
+        "Hate Speech": {
+          "precision": 0.9199,
+          "recall": 0.8915,
+          "f1": 0.9055,
+          "support": 3916
+        },
+        "Harassment": {
+          "precision": 0.7179,
+          "recall": 0.7435,
+          "f1": 0.7305,
+          "support": 3673
+        }
+      }
+    },
+    "tuned_threshold": {
+      "accuracy": 0.8238,
+      "macro_f1": 0.7726,
+      "threat_f1": 0.5667,
+      "per_class": {
+        "Not Cyberbullying": {
+          "precision": 0.8293,
+          "recall": 0.7905,
+          "f1": 0.8094,
+          "support": 4462
+        },
+        "Insult": {
+          "precision": 0.8327,
+          "recall": 0.8692,
+          "f1": 0.8505,
+          "support": 4036
+        },
+        "Threat": {
+          "precision": 0.5231,
+          "recall": 0.6182,
+          "f1": 0.5667,
+          "support": 55
+        },
+        "Hate Speech": {
+          "precision": 0.9197,
+          "recall": 0.8915,
+          "f1": 0.9053,
+          "support": 3916
+        },
+        "Harassment": {
+          "precision": 0.7174,
+          "recall": 0.7452,
+          "f1": 0.731,
+          "support": 3673
+        }
+      }
+    }
+  }
+}

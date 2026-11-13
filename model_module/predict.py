@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 import torch
@@ -12,13 +13,20 @@ tok = AutoTokenizer.from_pretrained(PATH)
 model = AutoModelForSequenceClassification.from_pretrained(PATH).to(device).eval()
 id2label = {int(k): v for k, v in model.config.id2label.items()}
 
+# Load tuned threat threshold if available
+THRESHOLD_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "threshold.json")
+THREAT_THRESHOLD = None
+if os.path.exists(THRESHOLD_FILE):
+    with open(THRESHOLD_FILE, "r", encoding="utf-8") as f:
+        THREAT_THRESHOLD = json.load(f).get("threat_threshold")
+
 
 def predict(text, return_all_scores=False):
     """Classify one string, or a list of strings. Returns a dict (or a list of dicts)."""
     single = isinstance(text, str)
     texts = [text] if single else list(text)
 
-    # empty or blank input: skip the model
+    # empty or blank input: raise ValueError
     if any(not isinstance(t, str) or not t.strip() for t in texts):
         raise ValueError("Input text must be a non-empty string.")
 
@@ -29,7 +37,16 @@ def predict(text, return_all_scores=False):
 
     results = []
     for p in probs:
-        i = int(p.argmax())
+        threat_idx = 2  # Threat label index
+        if THREAT_THRESHOLD is not None:
+            if float(p[threat_idx]) >= THREAT_THRESHOLD:
+                i = threat_idx
+            else:
+                other_indices = [idx for idx in range(len(p)) if idx != threat_idx]
+                i = max(other_indices, key=lambda idx: p[idx])
+        else:
+            i = int(p.argmax())
+
         r = {
             "label": id2label[i],
             "confidence": round(float(p[i]), 3),
